@@ -1,25 +1,56 @@
 <template>
   <div class="c_container">
-    <h1 class="title">{{ title }}</h1>
+    <!-- <h1 class="title">{{ title }}</h1> -->
+    <Title v-text="title" />
+
+    <input 
+      type="search"
+      class="filter"
+      v-on:input="filter = $event.target.value"
+      placeholder="filtre pelo título da imagem"
+    >
+
     <div class="c_photos__items">
-      <div class="c_panel" v-for="photo of photos" v-bind:key="photo._id">
-        <h2 class="panel__title">{{ photo.titulo }}</h2>
-        <div class="panel__content">
-          <img :src="photo.url" v-bind:alt="photo.titulo"/>
-        </div>
+      <div v-for="photo of photosFiltered" v-bind:key="photo._id">
+        <My-panel v-bind:titulo="photo.titulo">
+          <div slot="panel-content">
+            <img :src="photo.url" v-bind:alt="photo.titulo"/>
+          </div>
+        </My-panel>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Panel from './components/shared/panel/Panel.vue';
+import Title from './components/shared/title/Title.vue';
+
 export default {
+  components: {
+    'My-panel': Panel,
+    Title: Title,
+  },
+
   data() {
     return {
       title: 'Alura Pic',
       photos: [],
+      filter: '',
     }
   },
+
+  computed: {
+    photosFiltered() {
+      if (this.filter) {
+        const exp = new RegExp(this.filter.trim(), 'i');
+        return this.photos.filter((photo) => exp.test(photo.titulo));
+      } else {
+        return this.photos;
+      }
+    }
+  },
+
   created() {
     this.$http.get('http://localhost:3000/v1/fotos')
       .then((res) => res.json())
@@ -33,10 +64,6 @@ export default {
     font-family: Helvetica,sans-serif;
     width: 96%;
     margin: 0 auto;
-  }
-
-  .title {
-    text-align: center;
   }
 
   .c_photos__items {
@@ -53,8 +80,9 @@ export default {
     height: 250px;
   }
 
-  .panel__title {
-    text-align: center;
+  .filter {
+    display: block;
+    width: 100%;
   }
 
 </style>
