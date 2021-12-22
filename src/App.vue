@@ -14,7 +14,7 @@
       <div v-for="photo of photosFiltered" v-bind:key="photo._id">
         <My-panel v-bind:titulo="photo.titulo">
           <div slot="panel-content">
-            <img :src="photo.url" v-bind:alt="photo.titulo"/>
+            <image-responsive v-bind:url="photo.url" v-bind:title="photo.titulo"/>
           </div>
         </My-panel>
       </div>
@@ -25,11 +25,14 @@
 <script>
 import Panel from './components/shared/panel/Panel.vue';
 import Title from './components/shared/title/Title.vue';
+import ImageResponsive from './components/shared/image-responsive/ImageResponsive.vue';
 
 export default {
   components: {
     'My-panel': Panel,
     Title: Title,
+    'Image-responsive': ImageResponsive,
+    ImageResponsive,
   },
 
   data() {
