@@ -1,65 +1,21 @@
 <template>
   <div class="c_container">
-    <!-- <h1 class="title">{{ title }}</h1> -->
-    <Title v-text="title" />
+    <Menu />
+    <transition name="page">
+      <router-view></router-view>
+    </transition>
 
-    <input 
-      type="search"
-      class="filter"
-      v-on:input="filter = $event.target.value"
-      placeholder="filtre pelo título da imagem"
-    >
-
-    <div class="c_photos__items">
-      <div v-for="photo of photosFiltered" v-bind:key="photo._id">
-        <My-panel v-bind:titulo="photo.titulo">
-          <div slot="panel-content">
-            <image-responsive v-bind:url="photo.url" v-bind:title="photo.titulo"/>
-          </div>
-        </My-panel>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
-import Panel from './components/shared/panel/Panel.vue';
-import Title from './components/shared/title/Title.vue';
-import ImageResponsive from './components/shared/image-responsive/ImageResponsive.vue';
+  import Menu from './components/shared/menu/Menu.vue';
 
-export default {
-  components: {
-    'My-panel': Panel,
-    Title: Title,
-    'Image-responsive': ImageResponsive,
-    ImageResponsive,
-  },
-
-  data() {
-    return {
-      title: 'Alura Pic',
-      photos: [],
-      filter: '',
-    }
-  },
-
-  computed: {
-    photosFiltered() {
-      if (this.filter) {
-        const exp = new RegExp(this.filter.trim(), 'i');
-        return this.photos.filter((photo) => exp.test(photo.titulo));
-      } else {
-        return this.photos;
-      }
-    }
-  },
-
-  created() {
-    this.$http.get('http://localhost:3000/v1/fotos')
-      .then((res) => res.json())
-      .then((photos) => this.photos = photos, (err) => console.log(err));
+  export default {
+    components: {
+      Menu,
+    },
   }
-}
 </script>
 
 <style>
@@ -69,23 +25,11 @@ export default {
     margin: 0 auto;
   }
 
-  .c_photos__items {
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 800px;
-    margin: 0 auto;
-    gap: 10px;
-    justify-content: center;
+  .page-enter, .page-leave-active {
+    opacity: 0;
   }
 
-  .c_photos__items img {
-    width: 250px;
-    height: 250px;
+  .page-enter-active, .page-leave-active {
+    transition: opacity 2s;
   }
-
-  .filter {
-    display: block;
-    width: 100%;
-  }
-
 </style>
