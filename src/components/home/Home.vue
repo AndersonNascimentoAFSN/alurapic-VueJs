@@ -13,8 +13,16 @@
     <div class="c_photos__items">
       <div v-for="photo of photosFiltered" v-bind:key="photo._id">
         <My-panel v-bind:titulo="photo.titulo">
-          <div slot="panel-content">
+          <div slot="panel-content" class="panel-content">
             <image-responsive v-bind:url="photo.url" v-bind:title="photo.titulo"/>
+            <!-- <Button type="button" label="Remover" v-on:click.native="remove(photo)"/> -->
+            <Button 
+              type="button"
+              label="Remover"
+              v-on:buttonActive="remove($event, photo)"
+              v-bind:confirm="true"
+              styleClass="warning"
+            />
           </div>
         </My-panel>
       </div>
@@ -26,6 +34,7 @@
 import Panel from '../shared/panel/Panel.vue';
 import Title from '../shared/title/Title.vue';
 import ImageResponsive from '../shared/image-responsive/ImageResponsive.vue';
+import Button from '../shared/button/Button.vue';
 
 export default {
   components: {
@@ -33,6 +42,7 @@ export default {
     Title: Title,
     'Image-responsive': ImageResponsive,
     ImageResponsive,
+    Button,
   },
 
   data() {
@@ -51,6 +61,13 @@ export default {
       } else {
         return this.photos;
       }
+    }
+  },
+
+  methods: {
+    remove($event, photo) {
+      alert($event);
+      alert('Remover a foto' + photo.titulo);
     }
   },
 
@@ -86,6 +103,10 @@ export default {
   .filter {
     display: block;
     width: 100%;
+  }
+
+  .panel-content {
+    text-align: center;
   }
 
 </style>
