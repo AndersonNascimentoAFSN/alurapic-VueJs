@@ -10,11 +10,19 @@ Vue.directive('transform', {
       // let animation = binding.value.animation || false;
 
       let increment = binding.value || 90;
-      // passando um modifiers:
-      if (binding.modifiers.reverse) increment = -binding.value || -90;
+      let effect;
 
-      current += increment;
-      el.style.transform = `rotate(${current}deg)`;
+      // args
+      if (!binding.arg || binding.arg === 'rotate') {
+        // passando um modifiers:
+        if (binding.modifiers.reverse) increment = -binding.value || -90;
+        current += increment;
+        effect = `rotate(${current}deg)`
+      } else if (binding.arg === 'scale') {
+        effect = `scale(${increment})`
+      }
+
+      el.style.transform = effect;
 
       // passando um modifiers:
       if (binding.modifiers.animation) el.style.transition = 'transform 0.5s';
@@ -23,5 +31,6 @@ Vue.directive('transform', {
       // passando um objeto na diretiva:
       // if (animation) el.style.transition = 'transform 0.5s';
     });
+    // console.log(vnode.context.propriedadeDoComponenteNoQualADiretivaFoiAssociada)
   }
 });

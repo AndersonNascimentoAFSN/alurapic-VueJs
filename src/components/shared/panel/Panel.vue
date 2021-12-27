@@ -27,6 +27,10 @@ export default {
     width: 250px;
   }
 
+  .panel__content {
+    overflow: hidden;
+  }
+
   .panel__title {
     text-align: center;
     cursor: pointer;
