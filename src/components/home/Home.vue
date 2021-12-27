@@ -42,6 +42,7 @@ import Panel from '../shared/panel/Panel.vue';
 import Title from '../shared/title/Title.vue';
 import ImageResponsive from '../shared/image-responsive/ImageResponsive.vue';
 import Button from '../shared/button/Button.vue';
+import transform from '../../directives/Transform'
 
 export default {
   components: {
@@ -50,6 +51,10 @@ export default {
     'Image-responsive': ImageResponsive,
     ImageResponsive,
     Button,
+  },
+
+  directives: {
+    transform
   },
 
   data() {
