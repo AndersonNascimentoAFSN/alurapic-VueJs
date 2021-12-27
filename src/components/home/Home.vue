@@ -14,7 +14,14 @@
       <div v-for="photo of photosFiltered" v-bind:key="photo._id">
         <My-panel v-bind:titulo="photo.titulo">
           <div slot="panel-content" class="panel-content">
-            <image-responsive v-bind:url="photo.url" v-bind:title="photo.titulo"/>
+            <!-- posso passar um objeto para a diretiva ou um modifiers -->
+            <!-- v-transform="{ increment: 30, animation: true }" --> 
+            <!-- v-transform.animation="30" --> 
+            <image-responsive
+              v-bind:url="photo.url"
+              v-bind:title="photo.titulo"
+              v-transform:rotate.animation.reverse="30"
+            />
             <!-- <Button type="button" label="Remover" v-on:click.native="remove(photo)"/> -->
             <Button 
               type="button"
