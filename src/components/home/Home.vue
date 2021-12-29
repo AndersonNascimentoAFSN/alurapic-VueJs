@@ -1,9 +1,14 @@
 <template>
   <div class="c_container">
-      <!-- <Title v-text="title" /> -->
+    <!-- <Title v-text="title" /> -->
     <Title v-bind:title="title" />
 
-    <input 
+    <p
+      v-show="message"
+      class="message"
+    >{{ message }}</p>
+
+    <input
       type="search"
       class="filter"
       v-on:input="filter = $event.target.value"
@@ -11,19 +16,25 @@
     >
 
     <div class="c_photos__items">
-      <div v-for="photo of photosFiltered" v-bind:key="photo._id">
+      <div
+        v-for="photo of photosFiltered"
+        v-bind:key="photo._id"
+      >
         <My-panel v-bind:titulo="photo.titulo">
-          <div slot="panel-content" class="panel-content">
+          <div
+            slot="panel-content"
+            class="panel-content"
+          >
             <!-- posso passar um objeto para a diretiva ou um modifiers -->
-            <!-- v-transform="{ increment: 30, animation: true }" --> 
-            <!-- v-transform.animation="30" --> 
+            <!-- v-transform="{ increment: 30, animation: true }" -->
+            <!-- v-transform.animation="30" -->
             <image-responsive
               v-bind:url="photo.url"
               v-bind:title="photo.titulo"
               v-transform:rotate.animation.reverse="30"
             />
             <!-- <Button type="button" label="Remover" v-on:click.native="remove(photo)"/> -->
-            <Button 
+            <Button
               type="button"
               label="Remover"
               v-on:buttonActive="remove($event, photo)"
@@ -42,7 +53,8 @@ import Panel from '../shared/panel/Panel.vue';
 import Title from '../shared/title/Title.vue';
 import ImageResponsive from '../shared/image-responsive/ImageResponsive.vue';
 import Button from '../shared/button/Button.vue';
-import transform from '../../directives/Transform'
+import transform from '../../directives/Transform';
+import PhotoService from '../../domain/photo/PhotoService';
 
 export default {
   components: {
@@ -62,6 +74,7 @@ export default {
       title: 'Alura Pic',
       photos: [],
       filter: '',
+      message: '',
     }
   },
 
@@ -78,47 +91,98 @@ export default {
 
   methods: {
     remove($event, photo) {
-      alert($event);
-      alert('Remover a foto' + photo.titulo);
+      // alert($event);
+      // alert('Remover a foto' + photo.titulo);
+
+      // this.$http
+      //   .delete(`v1/fotos/${photo._id}`)
+      //   .then(() => {
+      //     this.message = 'Foto removida com sucesso';
+      //     const index = this.photos.indexOf(photo);
+      //     this.photos.splice(index, 1);
+      //     // this.photos = this.photos.filter((photoArray) => photo._id !== photoArray._id)
+      //     console.log(this.photos);
+      //   }, err => {
+      //     console.error(err);
+      //     this.message = 'Não foi possível remover a foto';
+      //   });
+
+      // melhorando resource:
+
+      // this.resource.delete({ id: photo._id })
+      //   .then(() => {
+      //     const index = this.photos.indexOf(photo);
+      //     this.photos.splice(index, 1);
+      //     this.message = 'Foto removida com sucesso';
+      //     // this.photos = this.photos.filter((photoArray) => photo._id !== photoArray._id)
+      //     console.log(this.photos);
+      //   }, err => {
+      //     console.error(err);
+      //     this.message = 'Não foi possível remover a foto';
+      //   });
+
+      this.service.deletePhoto(photo._id)
+        .then(() => {
+          const index = this.photos.indexOf(photo);
+          this.photos.splice(index, 1);
+          this.message = 'Foto removida com sucesso';
+          // this.photos = this.photos.filter((photoArray) => photo._id !== photoArray._id)
+          console.log(this.photos);
+        }, err => {
+          console.error(err);
+          this.message = 'Não foi possível remover a foto';
+        });
     }
   },
 
   created() {
-    this.$http.get('http://localhost:3000/v1/fotos')
-      .then((res) => res.json())
-      .then((photos) => this.photos = photos, (err) => console.log(err));
+    //   this.$http.get('v1/fotos')
+    //     .then((res) => res.json())
+    //     .then((photos) => this.photos = photos, (err) => console.log(err));
+    // }
+
+    // melhorando resource:
+    // this.resource = this.$resource('v1/fotos{/id}');
+    // this.resource
+    //   .query()
+    //   .then(res => res.json())
+    //   .then((photos) => this.photos = photos, err => console.log(err));
+
+    this.service = new PhotoService(this.$resource)
+    this.service
+      .getPhotos()
+      .then((photos) => this.photos = photos, err => console.log(err));
   }
 }
 </script>
 
 <style>
-  .c_container {
-    font-family: Helvetica,sans-serif;
-    width: 96%;
-    margin: 0 auto;
-  }
+.c_container {
+  font-family: Helvetica, sans-serif;
+  width: 96%;
+  margin: 0 auto;
+}
 
-  .c_photos__items {
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 800px;
-    margin: 0 auto;
-    gap: 10px;
-    justify-content: center;
-  }
+.c_photos__items {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 800px;
+  margin: 0 auto;
+  gap: 10px;
+  justify-content: center;
+}
 
-  .c_photos__items img {
-    width: 250px;
-    height: 250px;
-  }
+.c_photos__items img {
+  width: 250px;
+  height: 250px;
+}
 
-  .filter {
-    display: block;
-    width: 100%;
-  }
+.filter {
+  display: block;
+  width: 100%;
+}
 
-  .panel-content {
-    text-align: center;
-  }
-
+.panel-content {
+  text-align: center;
+}
 </style>
