@@ -1,8 +1,17 @@
 <template>
 
   <div>
-    <h1 class="centralizado">Cadastro</h1>
-    <h2 class="centralizado"></h2>
+    <h1
+      class="centralizado"
+      v-if="!photo._id"
+    >Cadastro</h1>
+
+    <h1
+      class="centralizado"
+      v-else
+    >Atualização</h1>
+
+    <h2 class="centralizado">{{ photo.titulo }}</h2>
 
     <form v-on:submit.prevent="savePhoto()">
       <div class="controle">

@@ -1,3 +1,8 @@
+const errorsMessages = {
+  getError: 'Não foi possível obter as fotos',
+  deleteError: 'Não foi possível remover a foto.',
+}
+
 export default class PhotoService {
 
   constructor(resource) {
@@ -7,7 +12,10 @@ export default class PhotoService {
   getPhotos() {
     return this._resource
       .query()
-      .then(res => res.json());
+      .then(res => res.json(), (err) => {
+        console.log(err);
+        throw new Error(errorsMessages.getError);
+      });
   }
 
   registerPhoto(photo) {
@@ -21,7 +29,11 @@ export default class PhotoService {
   }
 
   deletePhoto(id) {
-    return this._resource.delete({ id });
+    return this._resource.delete({ id })
+      .then(null, (err) => {
+        console.log(err);
+        throw new Error(errorsMessages.deleteError)
+      })
   }
 
   getPhotoById(id) {

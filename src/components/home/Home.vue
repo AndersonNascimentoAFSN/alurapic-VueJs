@@ -134,11 +134,7 @@ export default {
           this.photos.splice(index, 1);
           this.message = 'Foto removida com sucesso';
           // this.photos = this.photos.filter((photoArray) => photo._id !== photoArray._id)
-          console.log(this.photos);
-        }, err => {
-          console.error(err);
-          this.message = 'Não foi possível remover a foto';
-        });
+        }, (err) => this.message = err.message);
     }
   },
 
@@ -158,7 +154,7 @@ export default {
     this.service = new PhotoService(this.$resource)
     this.service
       .getPhotos()
-      .then((photos) => this.photos = photos, err => console.log(err));
+      .then((photos) => this.photos = photos, (err) => this.message = err.message);
   }
 }
 </script>
@@ -190,6 +186,10 @@ export default {
 }
 
 .panel-content {
+  text-align: center;
+}
+
+.message {
   text-align: center;
 }
 </style>
