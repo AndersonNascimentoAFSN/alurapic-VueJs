@@ -34,6 +34,13 @@
               v-transform:rotate.animation.reverse="30"
             />
             <!-- <Button type="button" label="Remover" v-on:click.native="remove(photo)"/> -->
+            <router-link :to="{ name: 'Change', params: { id: photo._id} }">
+              <Button
+                type="button"
+                label="Alterar"
+              >
+              </Button>
+            </router-link>
             <Button
               type="button"
               label="Remover"

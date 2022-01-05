@@ -29,7 +29,10 @@
         >
         <!-- v-on:input="photo.url = $event.target.value"
           v-bind:value="photo.url" -->
-        <ImageResponsive />
+        <ImageResponsive
+          v-bind:url="photo.url"
+          v-bind:title="photo.titulo"
+        />
       </div>
 
       <div class="controle">
@@ -79,6 +82,7 @@ export default {
       //   descricao: '',
       // }
       photo: new Photo(),
+      id: this.$route.params.id
     }
   },
   methods: {
@@ -99,12 +103,20 @@ export default {
 
       this.service
         .registerPhoto(this.photo)
-        .then(() => this.photo = new Photo(), err => console.error(err))
+        .then(() => {
+          if (this.id) this.$router.push({ name: 'Home' });
+          this.photo = new Photo();
+        }, err => console.error(err));
     }
   },
   created() {
     // this.resource = this.$resource('v1/fotos');
-    this.service = new PhotoService(this.$resource)
+    this.service = new PhotoService(this.$resource);
+    if (this.id) {
+      this.service
+        .getPhotoById(this.id)
+        .then(photo => this.photo = photo);
+    }
   }
 }
 
