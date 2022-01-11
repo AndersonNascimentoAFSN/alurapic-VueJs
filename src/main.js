@@ -5,6 +5,7 @@ import VueRouter from 'vue-router';
 import { routes } from './routes';
 import './directives/Transform';
 // import vuetify from './plugins/vuetify';
+import './plugins/rulesVeeValidate';
 
 Vue.use(VueResource);
 Vue.http.options.root = 'http://localhost:3000';

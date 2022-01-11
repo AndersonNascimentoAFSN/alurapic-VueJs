@@ -13,60 +13,91 @@
 
     <h2 class="centralizado">{{ photo.titulo }}</h2>
 
-    <form v-on:submit.prevent="savePhoto()">
-      <div class="controle">
-        <label for="titulo">TÍTULO</label>
-        <input
-          id="titulo"
-          autocomplete="off"
-          v-model.lazy="photo.titulo"
-        >
-        <!-- v-model substitui as linhas abaixo: -->
-        <!-- v-on:input="photo.titulo = $event.target.value" -->
-        <!-- v-bind:value="photo.titulo" -->
+    <validation-observer v-slot="{ handleSubmit }">
+      <!-- <form v-on:submit.prevent="savePhoto()"> -->
+      <form v-on:submit.prevent="handleSubmit(savePhoto)">
+        <div class="controle">
+          <label for="titulo">TÍTULO</label>
+          <validation-provider
+            rules="required|minmax:3,20"
+            :bails="false"
+            v-slot="{ errors }"
+          >
+            <div class="c_error">
+              <input
+                id="titulo"
+                autocomplete="off"
+                v-model.lazy="photo.titulo"
+                name="titulo"
+              >
+              <ul>
+                <li
+                  v-for="error in errors"
+                  v-bind:key="error"
+                  class="error_item"
+                >
+                  <span class="erro">{{ error }}</span>
+                </li>
+              </ul>
+            </div>
+            <span>{{photo.titulo}}</span>
+          </validation-provider>
 
-        <!-- modifier lazy - Utilizado para performance -->
-        <span>{{photo.titulo}}</span>
-      </div>
+          <!-- v-model substitui as linhas abaixo: -->
+          <!-- v-on:input="photo.titulo = $event.target.value" -->
+          <!-- v-bind:value="photo.titulo" -->
 
-      <div class="controle">
-        <label for="url">URL</label>
-        <input
-          id="url"
-          autocomplete="off"
-          v-model.lazy="photo.url"
-        >
-        <!-- v-on:input="photo.url = $event.target.value"
+          <!-- modifier lazy - Utilizado para performance -->
+        </div>
+
+        <div class="controle">
+          <label for="url">URL</label>
+
+          <validation-provider
+            rules="required"
+            v-slot="{ errors }"
+          >
+            <div class="c_error">
+              <input
+                id="url"
+                autocomplete="off"
+                v-model.lazy="photo.url"
+              >
+              <span class="error_item">{{ errors[0] }}</span>
+            </div>
+          </validation-provider>
+          <!-- v-on:input="photo.url = $event.target.value"
           v-bind:value="photo.url" -->
-        <ImageResponsive
-          v-bind:url="photo.url"
-          v-bind:title="photo.titulo"
-        />
-      </div>
+          <ImageResponsive
+            v-bind:url="photo.url"
+            v-bind:title="photo.titulo"
+          />
+        </div>
 
-      <div class="controle">
-        <label for="descricao">DESCRIÇÃO</label>
-        <textarea
-          id="descricao"
-          autocomplete="off"
-          v-model.lazy="photo.descricao"
-        ></textarea>
-        <!-- v-on:input="photo.descricao = $event.target.value"
+        <div class="controle">
+          <label for="descricao">DESCRIÇÃO</label>
+          <textarea
+            id="descricao"
+            autocomplete="off"
+            v-model.lazy="photo.descricao"
+          ></textarea>
+          <!-- v-on:input="photo.descricao = $event.target.value"
           v-bind:value="photo.descricao" -->
-      </div>
+        </div>
 
-      <div class="centralizado">
-        <Button
-          label="GRAVAR"
-          type="submit"
-        />
-        <router-link v-bind:to="{ name: 'Home' }"><Button
-            label="VOLTAR"
-            type="button"
-          /></router-link>
-      </div>
+        <div class="centralizado">
+          <Button
+            label="GRAVAR"
+            type="submit"
+          />
+          <router-link v-bind:to="{ name: 'Home' }"><Button
+              label="VOLTAR"
+              type="button"
+            /></router-link>
+        </div>
 
-    </form>
+      </form>
+    </validation-observer>
   </div>
 </template>
 
@@ -76,12 +107,15 @@ import ImageResponsive from '../shared/image-responsive/ImageResponsive.vue'
 import Button from '../shared/button/Button.vue';
 import Photo from '../../domain/photo/Photo';
 import PhotoService from '../../domain/photo/PhotoService';
+import { ValidationProvider, ValidationObserver } from 'vee-validate';
 
 export default {
   components: {
     ImageResponsive,
     Button,
     Photo,
+    'validation-provider': ValidationProvider,
+    'validation-observer': ValidationObserver,
   },
   data() {
     return {
@@ -152,5 +186,14 @@ export default {
 
 .centralizado {
   text-align: center;
+}
+
+.c_error {
+  display: flex;
+  flex-direction: column;
+}
+
+.error_item {
+  color: red;
 }
 </style>
